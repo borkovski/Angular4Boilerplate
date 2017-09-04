@@ -7,11 +7,13 @@ import { RouterModule } from '@angular/router';
 
 import { NavMenuComponent } from './components/navmenu/navmenu.component';
 import { HomeComponent } from './components/home/home.component';
+import { GravityComponent } from './components/gravity/gravity.component';
 
 @NgModule({
     declarations: [
         AppComponent,
         HomeComponent,
+        GravityComponent,
         NavMenuComponent
     ],
     imports: [
@@ -21,6 +23,7 @@ import { HomeComponent } from './components/home/home.component';
         RouterModule.forRoot([
             { path: '', redirectTo: 'home', pathMatch: 'full' },
             { path: 'home', component: HomeComponent },
+            { path: 'gravity', component: GravityComponent },
             { path: '**', redirectTo: 'home' }
         ])
     ],
