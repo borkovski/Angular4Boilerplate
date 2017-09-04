@@ -9,6 +9,8 @@
 
   <ItemGroup>
     <Folder Include="angular-four-boilerplate\" />
+    <Folder Include="src\app\components\navmenu\" />
+    <Folder Include="src\app\components\home\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
   <ItemGroup>
