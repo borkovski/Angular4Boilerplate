@@ -1,3 +1,11 @@
 ﻿<div style="padding: 40px;">
-  <canvas id="myCanvas" width="512" height="512" style="border:1px solid #ddd">TEST</canvas>
+  <canvas id="myCanvas" width="512" height="512" style="border:1px solid #ddd">canvas</canvas>
+</div>
+<div style="padding: 0px 40px;">
+  <label class="form-check-label">
+    <input type="checkbox" class="form-check-input" [(ngModel)]="isSteppedDraw" (change)="tick()" />
+    Toggle step draw
+  </label>
+  <br />
+  <button class="btn btn-primary" *ngIf="isSteppedDraw" (click)="triggerStep($event)">Next step</button>
 </div>

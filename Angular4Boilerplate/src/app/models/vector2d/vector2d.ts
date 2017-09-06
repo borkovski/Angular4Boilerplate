@@ -11,6 +11,7 @@
     normalize(): IVector2d;
     distance(vector: IVector2d): number;
     dot(vector: IVector2d): number;
+    round(precision: number): IVector2d;
 }
 
 export class Vector2d implements IVector2d {
@@ -70,6 +71,13 @@ export class Vector2d implements IVector2d {
     }
 
     dot(vector: IVector2d): number {
-        return this.x * vector.x + this.y * vector.y;
+        return this.x * vector.x + this.y * vector.y; 
+    }
+
+    round(precision: number) {
+        var multiplier = precision > 0 ? 10 * precision : 1;
+        this.x = Math.round(this.x * multiplier) / multiplier;
+        this.y = Math.round(this.y * multiplier) / multiplier;
+        return this;
     }
 }

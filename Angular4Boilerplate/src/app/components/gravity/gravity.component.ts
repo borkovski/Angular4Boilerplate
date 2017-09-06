@@ -12,9 +12,9 @@ export class GravityComponent implements AfterViewInit {
     canvasWidth: number;
     canvasHeight: number;
     mousePosition: IVector2d;
-    isDrawing: boolean = true;
     ballCount: number = 25;
     testBall: IBall;
+    isSteppedDraw: boolean = false;
 
     ngAfterViewInit() {
         this.myCanvas = document.getElementById("myCanvas") as HTMLCanvasElement;
@@ -34,7 +34,7 @@ export class GravityComponent implements AfterViewInit {
     }
 
     tick() {
-        if (this.isDrawing) {
+        if (!this.isSteppedDraw) {
             requestAnimationFrame(() => {
                 this.tick()
             });
@@ -45,10 +45,12 @@ export class GravityComponent implements AfterViewInit {
     }
 
     reset() {
-        this.testBall = new Ball();
-        this.testBall.color = "red";
-        this.testBall.radius = 10;
+        this.testBall = new Ball(10);
         this.testBall.position = new Vector2d(100, 100);
-        this.testBall.velocity = new Vector2d(1, 0);
+        this.testBall.applyForce(new Vector2d(0, 1));
+    }
+
+    triggerStep(event: any) {
+        this.tick();
     }
 }
