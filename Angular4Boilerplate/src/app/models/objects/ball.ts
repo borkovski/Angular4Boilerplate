@@ -1,15 +1,19 @@
 ﻿import { IVector2d, Vector2d } from '../vector2d/vector2d';
+import { IColor, Color } from '../color/color';
 import { IObject2d } from './object2d';
 
 export interface IBall extends IObject2d {
-    color: string;
+    color: IColor;
     radius: number;
     mass: number;
     density: number;
     restitution: number;
     forces: IVector2d[];
+    isDrawingHighlights: boolean;
 
     applyForce(force: IVector2d);
+    checkBoundaries(boundaries: IVector2d);
+    handleCollision(collidingObject: IBall);
 }
 
 export class Ball implements IBall {
@@ -17,73 +21,95 @@ export class Ball implements IBall {
     velocity: IVector2d = new Vector2d(0, 0);
     acceleration: IVector2d = new Vector2d(0, 0);
 
-    color: string;
+    color: IColor;
     radius: number;
     mass: number;
     density: number;
     restitution: number;
     forces: IVector2d[] = [];
+    isDrawingHighlights: boolean;
 
-    constructor(radius: number) {
-        this.density = 10;
-        this.restitution = .91;
+    constructor(radius: number, density: number = 1) {
+        this.density = density;
+        this.restitution = .9;
         this.radius = radius;
-        this.mass = (2 * Math.PI * this.radius) / this.density;
-        this.color = this.radius < 10 ? "blue" : this.radius < 20 ? "green" : this.radius < 30 ? "yellow" : this.radius < 40 ? "orange" : "red";
-
-        console.log("NEW BALL: density - " + this.density + ", radius - " + this.radius + ", mass - " + this.mass + ", color - " + this.color);
+        this.mass = (2 * Math.PI * this.radius) * this.density;
+        this.color = new Color(0, 0, 0);
+        this.color.fromRange(this.mass, 0, 255);
+        this.isDrawingHighlights = true;
     }
 
     applyForce(force: IVector2d) {
         this.forces.push(force.clone());
     }
 
+    handleCollision(collidingObject: IBall) {
+        if (this.isColliding(collidingObject)) {
+            var n: IVector2d = this.position.clone().sub(collidingObject.position.clone()).normalize();
+            var a1: number = this.velocity.clone().dot(n);
+            var a2: number = collidingObject.velocity.clone().dot(n);
+            var optimizedP: number = (2 * (a1 - a2)) / (this.mass + collidingObject.mass);
+            this.velocity = this.velocity.clone().sub(n.clone().mult(optimizedP).mult(collidingObject.mass)).mult(this.restitution);
+            collidingObject.velocity = collidingObject.velocity.clone().sub(n.clone().mult(optimizedP).mult(this.mass)).mult(collidingObject.restitution);
+        }
+    }
+
     update() {
         this.updateAcceleration();
         this.updateVelocity();
         this.updatePosition();
-        this.checkBoundaries();
     }
 
-    private updateAcceleration() {
-        var force = this.forces.pop();
-        while (force != null) {
-            this.acceleration.add(force);
-            force = this.forces.pop();
-        }
-    }
-
-    private updateVelocity() {
-        this.velocity.add(this.acceleration);
-    }
-
-    private updatePosition() {
-        this.position.add(this.velocity).round(0);
-    }
-
-    private checkBoundaries() {
-        var boundaryX = 512;
-        var boundaryY = 512;
+    checkBoundaries(boundaries: IVector2d) {
+        var boundaryX = boundaries.x;
+        var boundaryY = boundaries.y;
         var isBounced: boolean = false;
         if (this.position.x + this.radius > boundaryX) {
             this.position.x = this.calculateBouncedPosition(this.position.x + this.radius, boundaryX) - this.radius;
+            this.velocity.x *= -1;
             isBounced = true;
         }
         if (this.position.x - this.radius < 0) {
             this.position.x = this.calculateBouncedPosition(this.position.x - this.radius, 0) + this.radius;
+            this.velocity.x *= -1;
             isBounced = true;
         }
-        if (this.position.y + this.radius > 512) {
+        if (this.position.y + this.radius > boundaryY) {
             this.position.y = this.calculateBouncedPosition(this.position.y + this.radius, boundaryY) - this.radius;
+            this.velocity.y *= -1;
             isBounced = true;
         }
         if (this.position.y - this.radius < 0) {
             this.position.y = this.calculateBouncedPosition(this.position.y - this.radius, 0) + this.radius;
+            this.velocity.y *= -1;
             isBounced = true;
         }
         if (isBounced) {
-            this.velocity.mult(-1).mult(this.restitution).round(2);
+            this.velocity.mult(this.restitution);
         }
+    }
+
+    private isColliding(collisionObject: IBall): boolean {
+        return this.position.distance(collisionObject.position) < this.radius + collisionObject.radius;
+    }
+
+    private updateAcceleration() {
+        var force = this.forces.pop();
+        var forceSum = new Vector2d(0,0);
+        while (force != null) {
+            forceSum.add(force);
+            force = this.forces.pop();
+        }
+        this.acceleration.add(forceSum.div(this.mass));
+    }
+
+    private updateVelocity() {
+        this.velocity.add(this.acceleration);
+        this.acceleration = new Vector2d(0, 0);
+    }
+
+    private updatePosition() {
+        this.position.add(this.velocity);
     }
 
     private calculateBouncedPosition(position: number, boundary: number): number {
@@ -93,8 +119,15 @@ export class Ball implements IBall {
     draw(context: CanvasRenderingContext2D) {
         context.beginPath();
         context.arc(this.position.x, this.position.y, this.radius, 0, 2 * Math.PI, false);
-        context.fillStyle = this.color;
+        context.fillStyle = this.color.toRGBA();
         context.fill();
+        if (this.isDrawingHighlights) {
+            var gradient = context.createRadialGradient(this.position.x, this.position.y, 1, this.position.x, this.position.y, this.radius * .9);
+            gradient.addColorStop(0, new Color(255, 255, 255, .5).toRGBA());
+            gradient.addColorStop(1, this.color.toRGBA());
+            context.fillStyle = gradient;
+            context.fill();
+        }
         context.closePath();
     }
 }
