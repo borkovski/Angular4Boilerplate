@@ -1,18 +1,11 @@
 ﻿import { IVector2d, Vector2d } from '../vector2d/vector2d';
 import { IColor, Color } from '../color/color';
-import { IObject2d } from './object2d';
+import { IPhysicalObject2d } from './physicalObject2d';
 
-export interface IBall extends IObject2d {
-    color: IColor;
+export interface IBall extends IPhysicalObject2d {
     radius: number;
-    mass: number;
-    density: number;
-    restitution: number;
-    forces: IVector2d[];
     isDrawingHighlights: boolean;
 
-    applyForce(force: IVector2d);
-    checkBoundaries(boundaries: IVector2d);
     handleCollision(collidingObject: IBall);
 }
 
@@ -23,7 +16,7 @@ export class Ball implements IBall {
 
     color: IColor;
     radius: number;
-    mass: number;
+    mass: number; 
     density: number;
     restitution: number;
     forces: IVector2d[] = [];
@@ -50,7 +43,10 @@ export class Ball implements IBall {
             var a2: number = collidingObject.velocity.clone().dot(n);
             var optimizedP: number = (2 * (a1 - a2)) / (this.mass + collidingObject.mass);
             this.velocity = this.velocity.clone().sub(n.clone().mult(optimizedP).mult(collidingObject.mass)).mult(this.restitution);
-            collidingObject.velocity = collidingObject.velocity.clone().sub(n.clone().mult(optimizedP).mult(this.mass)).mult(collidingObject.restitution);
+            collidingObject.velocity = collidingObject.velocity.clone().add(n.clone().mult(optimizedP).mult(this.mass)).mult(collidingObject.restitution);
+            var intersection = this.position.distance(collidingObject.position) - this.radius - collidingObject.radius;
+            this.position.sub(n.clone().mult(intersection / 2));
+            collidingObject.position.add(n.clone().mult(intersection / 2));
         }
     }
 
@@ -65,22 +61,22 @@ export class Ball implements IBall {
         var boundaryY = boundaries.y;
         var isBounced: boolean = false;
         if (this.position.x + this.radius > boundaryX) {
-            this.position.x = this.calculateBouncedPosition(this.position.x + this.radius, boundaryX) - this.radius;
+            this.position.x = boundaryX - this.radius;
             this.velocity.x *= -1;
             isBounced = true;
         }
         if (this.position.x - this.radius < 0) {
-            this.position.x = this.calculateBouncedPosition(this.position.x - this.radius, 0) + this.radius;
+            this.position.x = 0 + this.radius;
             this.velocity.x *= -1;
             isBounced = true;
         }
         if (this.position.y + this.radius > boundaryY) {
-            this.position.y = this.calculateBouncedPosition(this.position.y + this.radius, boundaryY) - this.radius;
+            this.position.y = boundaryY - this.radius;
             this.velocity.y *= -1;
             isBounced = true;
         }
         if (this.position.y - this.radius < 0) {
-            this.position.y = this.calculateBouncedPosition(this.position.y - this.radius, 0) + this.radius;
+            this.position.y = 0 + this.radius;
             this.velocity.y *= -1;
             isBounced = true;
         }
