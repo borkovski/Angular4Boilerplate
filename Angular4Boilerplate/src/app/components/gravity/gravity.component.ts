@@ -11,7 +11,7 @@ export class GravityComponent implements AfterViewInit {
     myCanvas: HTMLCanvasElement;
     canvasDimensions: IVector2d;
     mousePosition: IVector2d;
-    ballCount: number = 10;
+    ballCount: number = 100;
     testBalls: Array<IBall> = new Array<IBall>();
     isSteppedDraw: boolean = true;
     isCentralGravityActive: boolean = false;
@@ -95,7 +95,7 @@ export class GravityComponent implements AfterViewInit {
     applyCenterGravity(testBall: IBall) {
         var distance = testBall.position.distance(this.gravityCenter.position);
         var gravityForceY = ((testBall.mass * this.gravityCenter.mass) / (distance * distance));
-        testBall.applyForce(new Vector2d(this.gravityCenter.position.x - testBall.position.x, this.gravityCenter.position.y - testBall.position.y).normalize().mult(gravityForceY));
+        testBall.applyForce(this.gravityCenter.position.clone().sub(testBall.position).normalize().mult(gravityForceY));
     }
 
     applyFloorGravity(testBall: IBall) {

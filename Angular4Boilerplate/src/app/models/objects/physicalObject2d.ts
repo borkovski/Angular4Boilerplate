@@ -1,8 +1,8 @@
 ﻿import { IVector2d, Vector2d } from '../vector2d/vector2d';
 import { IColor, Color } from '../color/color';
-import { IObject2d } from './object2d';
+import { IMovingObject2d, IRotatingObject2d } from './object2d';
 
-export interface IPhysicalObject2d extends IObject2d {
+export interface IPhysicalObject2d extends IMovingObject2d, IRotatingObject2d {
     color: IColor;
     mass: number;
     density: number;

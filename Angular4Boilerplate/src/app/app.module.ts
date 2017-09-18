@@ -8,12 +8,14 @@ import { RouterModule } from '@angular/router';
 import { NavMenuComponent } from './components/navmenu/navmenu.component';
 import { HomeComponent } from './components/home/home.component';
 import { GravityComponent } from './components/gravity/gravity.component';
+import { AngularMotionComponent } from './components/angular-motion/angular-motion.component';
 
 @NgModule({
     declarations: [
         AppComponent,
         HomeComponent,
         GravityComponent,
+        AngularMotionComponent,
         NavMenuComponent
     ],
     imports: [
@@ -24,6 +26,7 @@ import { GravityComponent } from './components/gravity/gravity.component';
             { path: '', redirectTo: 'home', pathMatch: 'full' },
             { path: 'home', component: HomeComponent },
             { path: 'gravity', component: GravityComponent },
+            { path: 'angular-motion', component: AngularMotionComponent },
             { path: '**', redirectTo: 'home' }
         ])
     ],
