@@ -7,6 +7,7 @@ import { RouterModule } from '@angular/router';
 
 import { NavMenuComponent } from './components/navmenu/navmenu.component';
 import { HomeComponent } from './components/home/home.component';
+import { AnimatedCanvasComponent } from './components/animated-canvas/animated-canvas.component';
 import { GravityComponent } from './components/gravity/gravity.component';
 import { AngularMotionComponent } from './components/angular-motion/angular-motion.component';
 
@@ -14,6 +15,7 @@ import { AngularMotionComponent } from './components/angular-motion/angular-moti
     declarations: [
         AppComponent,
         HomeComponent,
+        AnimatedCanvasComponent,
         GravityComponent,
         AngularMotionComponent,
         NavMenuComponent

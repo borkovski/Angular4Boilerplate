@@ -1,0 +1,15 @@
+﻿<div style="padding: 0px 20px;">
+  <div style="padding: 20px 0px;">
+    <canvas id="myCanvas" width="1920" height="1080" style="border:1px solid #ddd; width: 100%; height: auto;">canvas</canvas>
+  </div>
+  <div style="padding: 20px 0px;">
+    <button class="btn btn-warning" (click)="resetView($event)">Reset</button>
+    <button class="btn btn-primary" *ngIf="isSteppedDraw" (click)="triggerStep($event)">Next step</button>
+  </div>
+  <span class='col-sm-2'>
+    <label class="form-check-label">
+      <input type="checkbox" class="form-check-input" [(ngModel)]="isSteppedDraw" (change)="tickView()" />
+      Step draw
+    </label>
+  </span>
+</div>
