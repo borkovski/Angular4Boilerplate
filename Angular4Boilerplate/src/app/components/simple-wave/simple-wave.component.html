@@ -1,0 +1,11 @@
+﻿<animated-canvas (reset)="reset($event)" (tick)="tick($event)"></animated-canvas>
+<br />
+<br />
+<div>
+  <span class="col-sm-1">Distance:</span>
+  <span class="col-sm-3"><input type="range" min="0.05" max="1" step="0.05" [(ngModel)]="distance" /></span>
+  <span class="col-sm-1">Speed:</span>
+  <span class="col-sm-3"><input type="range" min="0.01" max="0.2" step="0.01" [(ngModel)]="speed" /></span>
+  <span class="col-sm-1">Period:</span>
+  <span class="col-sm-3"><input type="range" min="1" max="100" step="1" [(ngModel)]="period" /></span>
+</div>
