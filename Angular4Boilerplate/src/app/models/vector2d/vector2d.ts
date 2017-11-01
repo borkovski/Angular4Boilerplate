@@ -12,6 +12,7 @@
     distance(vector: IVector2d): number;
     dot(vector: IVector2d): number;
     round(precision: number): IVector2d;
+    rotate(angle: number);
 }
 
 export class Vector2d implements IVector2d {
@@ -78,6 +79,13 @@ export class Vector2d implements IVector2d {
         var multiplier = precision > 0 ? 10 * precision : 1;
         this.x = Math.round(this.x * multiplier) / multiplier;
         this.y = Math.round(this.y * multiplier) / multiplier;
+        return this;
+    }
+
+    rotate(angle: number) {
+        var initialVector = this.clone();
+        this.x = initialVector.x * Math.cos(angle) - initialVector.y * Math.sin(angle);
+        this.y = initialVector.x * Math.sin(angle) + initialVector.y * Math.cos(angle);
         return this;
     }
 }

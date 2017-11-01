@@ -10,6 +10,7 @@ import { HomeComponent } from './components/home/home.component';
 import { AnimatedCanvasComponent } from './components/animated-canvas/animated-canvas.component';
 import { GravityComponent } from './components/gravity/gravity.component';
 import { AngularMotionComponent } from './components/angular-motion/angular-motion.component';
+import { SpacecraftNavigationComponent } from './components/spacecraft-navigation/spacecraft-navigation.component';
 
 @NgModule({
     declarations: [
@@ -18,6 +19,7 @@ import { AngularMotionComponent } from './components/angular-motion/angular-moti
         AnimatedCanvasComponent,
         GravityComponent,
         AngularMotionComponent,
+        SpacecraftNavigationComponent,
         NavMenuComponent
     ],
     imports: [
@@ -29,6 +31,7 @@ import { AngularMotionComponent } from './components/angular-motion/angular-moti
             { path: 'home', component: HomeComponent },
             { path: 'gravity', component: GravityComponent },
             { path: 'angular-motion', component: AngularMotionComponent },
+            { path: 'spacecraft-navigation', component: SpacecraftNavigationComponent },
             { path: '**', redirectTo: 'home' }
         ])
     ],

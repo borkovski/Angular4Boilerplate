@@ -1,0 +1,8 @@
+﻿<div id="keyReader" tabindex="1" (mouseenter)="focusKeyReader($event)" (mouseleave)="blurKeyReader($event)" (keydown)="readKeys($event)" (keyup)="readKeys($event)">
+  <animated-canvas (reset)="reset($event)" (tick)="tick($event)"></animated-canvas>
+  <div style="display:none;">
+    <img id="spacecraftImage" src="assets/spacecraft.gif" width="32" height="32">
+    <img id="spacecraftAcceleratingImage" src="assets/spacecraft_acceleration.gif" width="32" height="32">
+    <img id="spacecraftBreakingImage" src="assets/spacecraft_breaking.gif" width="32" height="32">
+  </div>
+</div>
