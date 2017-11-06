@@ -8,6 +8,7 @@ export interface IPhysicalObject2d extends IMovingObject2d, IRotatingObject2d {
     density: number;
     restitution: number;
     forces: IVector2d[];
+    isStatic: boolean;
 
     applyForce(force: IVector2d);
     checkBoundaries(boundaries: IVector2d);

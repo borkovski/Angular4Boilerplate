@@ -12,7 +12,9 @@
     distance(vector: IVector2d): number;
     dot(vector: IVector2d): number;
     round(precision: number): IVector2d;
-    rotate(angle: number);
+    rotate(angle: number): IVector2d;
+    fromPolar(angle: number, radius: number): IVector2d;
+    getAngle(origin: IVector2d): number;
 }
 
 export class Vector2d implements IVector2d {
@@ -75,17 +77,27 @@ export class Vector2d implements IVector2d {
         return this.x * vector.x + this.y * vector.y; 
     }
 
-    round(precision: number) {
+    round(precision: number): IVector2d {
         var multiplier = precision > 0 ? 10 * precision : 1;
         this.x = Math.round(this.x * multiplier) / multiplier;
         this.y = Math.round(this.y * multiplier) / multiplier;
         return this;
     }
 
-    rotate(angle: number) {
+    rotate(angle: number): IVector2d {
         var initialVector = this.clone();
         this.x = initialVector.x * Math.cos(angle) - initialVector.y * Math.sin(angle);
         this.y = initialVector.x * Math.sin(angle) + initialVector.y * Math.cos(angle);
         return this;
+    }
+
+    fromPolar(angle: number, radius: number): IVector2d {
+        this.x += radius * Math.sin(angle);
+        this.y += radius * Math.cos(angle);
+        return this;
+    }
+
+    getAngle(origin: IVector2d): number {
+        return Math.atan((origin.x - this.x) / (origin.y - this.y));
     }
 }

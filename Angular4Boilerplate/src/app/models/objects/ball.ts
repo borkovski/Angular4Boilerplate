@@ -5,6 +5,7 @@ import { IPhysicalObject2d } from './physicalObject2d';
 export interface IBall extends IPhysicalObject2d {
     radius: number;
     isDrawingHighlights: boolean;
+    isStatic: boolean;
 
     handleCollision(collidingObject: IBall);
 }
@@ -25,6 +26,7 @@ export class Ball implements IBall {
     restitution: number;
     forces: IVector2d[] = [];
     isDrawingHighlights: boolean;
+    isStatic: boolean;
 
     constructor(radius: number, density: number = 1) {
         this.density = density;
@@ -104,7 +106,7 @@ export class Ball implements IBall {
     }
 
     private updateVelocity() {
-        this.velocity.add(this.acceleration);
+        this.velocity.add(this.acceleration).mult(.999);
         this.acceleration = new Vector2d(0, 0);
     }
 

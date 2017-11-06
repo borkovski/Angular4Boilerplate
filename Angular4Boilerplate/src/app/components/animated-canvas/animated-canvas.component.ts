@@ -19,7 +19,18 @@ export class AnimatedCanvasComponent implements AfterViewInit {
     @HostListener('mousemove', ['$event'])
     onMousemove(event: MouseEvent) {
         this.canvas.mousePosition = this.getMousePos(event);
-    }    
+        this.mouseMove.emit(this.canvas);
+    }
+
+    @HostListener('mousedown', ['$event'])
+    onMousedown(event: MouseEvent) {
+        this.mouseDown.emit(this.canvas);
+    }
+
+    @HostListener('mouseup', ['$event'])
+    onMouseup(event: MouseEvent) {
+        this.mouseUp.emit(this.canvas);
+    } 
 
     getMousePos(evt) {
         var rect = this.canvas.canvasElement.getBoundingClientRect();
@@ -32,6 +43,15 @@ export class AnimatedCanvasComponent implements AfterViewInit {
 
     @Output()
     tick: EventEmitter<Canvas2d> = new EventEmitter<Canvas2d>();
+
+    @Output()
+    mouseDown: EventEmitter<Canvas2d> = new EventEmitter<Canvas2d>();
+
+    @Output()
+    mouseMove: EventEmitter<Canvas2d> = new EventEmitter<Canvas2d>();
+
+    @Output()
+    mouseUp: EventEmitter<Canvas2d> = new EventEmitter<Canvas2d>();
 
     tickView() {
         if (!this.isSteppedDraw) {

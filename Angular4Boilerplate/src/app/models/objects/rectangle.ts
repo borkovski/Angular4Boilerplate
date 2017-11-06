@@ -24,6 +24,7 @@ export class Rectangle implements IRectangle {
     density: number;
     restitution: number;
     forces: IVector2d[] = [];
+    isStatic: boolean = false;
 
     constructor(width: number, height: number, density: number = 1) {
         this.density = density;
