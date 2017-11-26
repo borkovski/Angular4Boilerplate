@@ -15,7 +15,7 @@ export class Color implements IColor {
     b: number;
     a: number;
 
-    constructor(r, g, b, a = 255) {
+    constructor(r, g, b, a = 1) {
         this.r = r;
         this.g = g;
         this.b = b;
@@ -27,7 +27,7 @@ export class Color implements IColor {
         this.b = (.5 - Math.min(.5, Math.max(.25, ratio))) / .25 * 255;
         this.r = (Math.min(.75, Math.max(.5, ratio)) - .5) / .25 * 255;
         this.g = ratio >= .5 ? (1 - Math.min(1, Math.max(.75, ratio))) / .25 * 255 : (Math.min(.25, ratio)) / .25 * 255;
-        this.a = 255;
+        this.a = 1;
         //console.log('actual: ' + actual + '; min: ' + min + '; max: ' + max + '; ratio: ' + ratio + '; r: ' + this.r + '; g: ' + this.g + '; b: ' + this.b);
     }
 

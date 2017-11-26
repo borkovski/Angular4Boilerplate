@@ -15,6 +15,7 @@
     rotate(angle: number): IVector2d;
     fromPolar(angle: number, radius: number): IVector2d;
     getAngle(origin: IVector2d): number;
+    log(): string;
 }
 
 export class Vector2d implements IVector2d {
@@ -99,5 +100,9 @@ export class Vector2d implements IVector2d {
 
     getAngle(origin: IVector2d): number {
         return Math.atan((origin.x - this.x) / (origin.y - this.y));
+    }
+
+    log(): string {
+        return "x: " + this.x + "; y: " + this.y + " ";
     }
 }
