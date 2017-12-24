@@ -77,7 +77,7 @@ export class SpacecraftNavigationComponent {
             this.spacecraft.setImage(this.spacecraftAcceleratingImage, 32, 32);
         }
         if (this.isBreaking) {
-            velocity.add(new Vector2d(0, .3));
+            velocity.add(new Vector2d(0, this.spacecraft.velocity.clone().mag() * .05));
             this.isBreaking = false;
             this.spacecraft.setImage(this.spacecraftBreakingImage, 32, 32);
         }
@@ -89,8 +89,8 @@ export class SpacecraftNavigationComponent {
             angleVelocity += .05;
             this.isTurningRight = false;
         }
-        this.spacecraft.applyAngularVelocity(angleVelocity);
-        this.spacecraft.applyVelocity(velocity);
+        this.spacecraft.rotate(angleVelocity);
+        this.spacecraft.applyForce(velocity);
         this.spacecraft.update();
         var ctx = canvas.getContext();
         ctx.fillStyle = new Color(0, 0, 0).toRGBA();

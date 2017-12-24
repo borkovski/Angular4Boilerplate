@@ -14,6 +14,6 @@ export interface IMovingObject2d extends IObject2d {
 }
 
 export interface IRotatingObject2d extends IObject2d {
-    angularVelocity: number;
-    angularAcceleration: number;
+    angle: number;
+    rotate(value: number);
 }

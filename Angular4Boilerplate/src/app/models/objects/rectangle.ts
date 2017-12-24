@@ -14,8 +14,6 @@ export class Rectangle implements IRectangle {
     acceleration: IVector2d = new Vector2d(0, 0);
 
     angle: number = 0;
-    angularVelocity: number = 0;
-    angularAcceleration: number = 0;
 
     color: IColor;
     width: number;
@@ -38,6 +36,10 @@ export class Rectangle implements IRectangle {
 
     applyForce(force: IVector2d) {
         this.forces.push(force.clone());
+    }
+
+    rotate(value: number) {
+        this.angle += value;
     }
 
     update() {
@@ -87,16 +89,12 @@ export class Rectangle implements IRectangle {
     }
 
     private updateVelocity() {
-        this.velocity.add(this.acceleration);
+        this.velocity.add(this.acceleration.rotate(this.angle)).mult(.999);
         this.acceleration = new Vector2d(0, 0);
-        this.angularVelocity += this.angularAcceleration;
-        //this.angularVelocity = Math.atan2(this.velocity.y / 50, this.velocity.x /50); //TEMP
-        this.angularAcceleration = 0;
     }
 
     private updatePosition() {
         this.position.add(this.velocity);
-        this.angle += this.angularVelocity;
     }
 
     private calculateBouncedPosition(position: number, boundary: number): number {

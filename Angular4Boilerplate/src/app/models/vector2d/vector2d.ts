@@ -7,10 +7,12 @@
     sub(vector: IVector2d): IVector2d;
     mult(scalar: number): IVector2d;
     div(scalar: number): IVector2d;
-    mag();
+    mag(): number;
     normalize(): IVector2d;
+    limit(max: number): IVector2d;
     distance(vector: IVector2d): number;
     dot(vector: IVector2d): number;
+    cross(vector: IVector2d): number;
     round(precision: number): IVector2d;
     rotate(angle: number): IVector2d;
     fromPolar(angle: number, radius: number): IVector2d;
@@ -55,7 +57,7 @@ export class Vector2d implements IVector2d {
         return this;
     }
 
-    mag() {
+    mag(): number {
         return Math.sqrt(this.x * this.x + this.y * this.y);
     }
 
@@ -67,6 +69,15 @@ export class Vector2d implements IVector2d {
         return this;
     }
 
+    limit(max: number) {
+        if (this.mag() > max * max) {
+            return this.normalize().mult(max);
+        }
+        else {
+            return this;
+        }
+    }
+
     distance(vector: IVector2d): number {
         var xd = vector.x - this.x;
         var yd = vector.y - this.y;
@@ -76,6 +87,10 @@ export class Vector2d implements IVector2d {
 
     dot(vector: IVector2d): number {
         return this.x * vector.x + this.y * vector.y; 
+    }
+
+    cross(vector: IVector2d): number {
+        return this.x * vector.y - this.y * vector.x;
     }
 
     round(precision: number): IVector2d {
@@ -99,7 +114,7 @@ export class Vector2d implements IVector2d {
     }
 
     getAngle(origin: IVector2d): number {
-        return Math.atan((origin.x - this.x) / (origin.y - this.y));
+        return Math.atan2(origin.cross(this), origin.dot(this));
     }
 
     log(): string {

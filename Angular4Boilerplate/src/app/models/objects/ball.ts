@@ -16,8 +16,6 @@ export class Ball implements IBall {
     acceleration: IVector2d = new Vector2d(0, 0);
 
     angle: number = 0;
-    angularVelocity: number = 0;
-    angularAcceleration: number = 0;
 
     color: IColor;
     radius: number;
@@ -40,6 +38,10 @@ export class Ball implements IBall {
 
     applyForce(force: IVector2d) {
         this.forces.push(force.clone());
+    }
+
+    rotate(value: number) {
+        this.angle += value;
     }
 
     handleCollision(collidingObject: IBall) {

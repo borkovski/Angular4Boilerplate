@@ -27,8 +27,6 @@ export class Particle implements IParticle {
     isStatic: boolean = false;
 
     angle: number = 0;
-    angularVelocity: number = 0;
-    angularAcceleration: number = 0;
 
     constructor(radius: number = 1, lifespan: number = 500, color: IColor = new Color(100, 100, 100)) {
         this.radius = radius;
@@ -45,6 +43,10 @@ export class Particle implements IParticle {
 
     applyForce(force: IVector2d) {
         this.forces.push(force.clone());
+    }
+
+    rotate(value: number) {
+        this.angle += value;
     }
 
     update() {

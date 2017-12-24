@@ -14,6 +14,7 @@ import { SpacecraftNavigationComponent } from './components/spacecraft-navigatio
 import { SimpleWaveComponent } from './components/simple-wave/simple-wave.component';
 import { PendulumComponent } from './components/pendulum/pendulum.component';
 import { ParticlesComponent } from './components/particles/particles.component';
+import { AutonomousVehicleComponent } from './components/autonomous-vehicle/autonomous-vehicle.component';
 
 @NgModule({
     declarations: [
@@ -26,6 +27,7 @@ import { ParticlesComponent } from './components/particles/particles.component';
         SimpleWaveComponent,
         PendulumComponent,
         ParticlesComponent,
+        AutonomousVehicleComponent,
         NavMenuComponent
     ],
     imports: [
@@ -41,6 +43,7 @@ import { ParticlesComponent } from './components/particles/particles.component';
             { path: 'simple-wave', component: SimpleWaveComponent },
             { path: 'pendulum', component: PendulumComponent },
             { path: 'particles', component: ParticlesComponent },
+            { path: 'autonomous-vehicle', component: AutonomousVehicleComponent },
             { path: '**', redirectTo: 'home' }
         ])
     ],
