@@ -21,7 +21,7 @@ export class AutonomousVehicleComponent {
         this.canvas = canvas;
         this.carImage = document.getElementById('carImage') as HTMLImageElement;
         var canvasDimensions = canvas.getCanvasDimensions();
-        this.car = new AutonomousObject2d(this.carImage, 64, 64, new Vector2d(Math.random() * canvasDimensions.x, Math.random() * canvasDimensions.y));
+        this.car = new AutonomousObject2d(this.carImage, 64, 64, canvasDimensions);
     }
 
     tick(canvas: Canvas2d) {
