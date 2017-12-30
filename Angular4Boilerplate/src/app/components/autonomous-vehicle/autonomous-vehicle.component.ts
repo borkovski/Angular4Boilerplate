@@ -6,6 +6,7 @@ import { IColor, Color } from '../../models/color/color';
 import { Ball, IBall } from '../../models/objects/ball';
 import { Spring, ISpring } from '../../models/objects/spring';
 import { IPhysicalObject2d } from '../../models/objects/physicalObject2d';
+import { TextureObject2d, ITextureObject2d } from '../../models/objects/textureObject2d';
 import { AutonomousObject2d, IAutonomousObject2d } from '../../models/objects/autonomousObject2d';
 
 @Component({
@@ -21,7 +22,9 @@ export class AutonomousVehicleComponent {
         this.canvas = canvas;
         this.carImage = document.getElementById('carImage') as HTMLImageElement;
         var canvasDimensions = canvas.getCanvasDimensions();
-        this.car = new AutonomousObject2d(this.carImage, 64, 64, canvasDimensions);
+        var car = new TextureObject2d(this.carImage, 64, 64);
+        car.position = new Vector2d(Math.random() * canvasDimensions.x, Math.random() * canvasDimensions.y);
+        this.car = new AutonomousObject2d(car, canvasDimensions);
     }
 
     tick(canvas: Canvas2d) {

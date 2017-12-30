@@ -4,32 +4,33 @@ import { IObject2d } from './object2d';
 import { TextureObject2d, ITextureObject2d } from '../../models/objects/textureObject2d';
 
 export interface IAutonomousObject2d {
-
     setDestination(destination: IVector2d);
     update();
     draw(context: CanvasRenderingContext2D);
 }
 
 export class AutonomousObject2d implements IAutonomousObject2d {
-    texturedObject: ITextureObject2d;
-    destination: IVector2d;
-    maxSpeed: number = 15;
-    maxReverse: number = 5;
-    speedToAccelerationCoefficient: number = 30;
+    texturedObject: ITextureObject2d; //vehicle - car image
+    steeringWheel: ITextureObject2d; //visualization aid
+
+    canvasDimensions: IVector2d;
+    destination: IVector2d; //set by mouse click
+
+    maxSpeed: number = 15; //speed limit
+    maxReverse: number = 5; //reverse speed limit
+    speedToAccelerationCoefficient: number = 30; //acceleration limit
+    maxAngle: number = .05; //turning limit
+
     isInReverse: boolean = false;
-    maxAngle: number = .05;
     gasForce: number = 0;
     prevDestinationAngle: number = 0;
     prevDistance: number = 0;
     backFromReverseAngle: number = 0;
 
-    steeringWheel: ITextureObject2d;
-    canvasDimensions: IVector2d;
 
-    constructor(image: HTMLImageElement, width: number, height: number, canvasDimensions: IVector2d) {
+    constructor(texturedObject: ITextureObject2d, canvasDimensions: IVector2d) {
         this.canvasDimensions = canvasDimensions;
-        this.texturedObject = new TextureObject2d(image, width, height);
-        this.texturedObject.position = new Vector2d(Math.random() * canvasDimensions.x, Math.random() * canvasDimensions.y);
+        this.texturedObject = texturedObject;
         var steeringWheelImage = document.getElementById('steeringWheelImage') as HTMLImageElement;
         this.steeringWheel = new TextureObject2d(steeringWheelImage, 128, 128);
         this.steeringWheel.position = new Vector2d(this.canvasDimensions.x / 2, this.canvasDimensions.y - 50);
@@ -46,11 +47,14 @@ export class AutonomousObject2d implements IAutonomousObject2d {
         }
         var initialDestinationAngle = this.getDestinationAngle();
         var initialDistance = this.destination.clone().distance(this.texturedObject.position.clone());
+
         this.tryChangeGear();
         this.turn();
         this.tryChangeVelocity();
+
         this.texturedObject.update();
         this.steeringWheel.update();
+
         this.prevDestinationAngle = initialDestinationAngle;
         this.prevDistance = initialDistance;
     }
@@ -70,7 +74,7 @@ export class AutonomousObject2d implements IAutonomousObject2d {
         if (this.shouldReverse()) {
             this.gearToReverse();
         }
-        else if (this.isInReverse && this.shouldDrive()) {
+        else if (this.shouldDrive()) {
             this.gearToDrive();
         }
     }
@@ -92,7 +96,7 @@ export class AutonomousObject2d implements IAutonomousObject2d {
     }
 
     private shouldDrive(): boolean {
-        return Math.abs(this.getDestinationAngle()) < Math.abs(this.backFromReverseAngle);
+        return this.isInReverse && Math.abs(this.getDestinationAngle()) < Math.abs(this.backFromReverseAngle);
     }
 
     private gearToDrive(): void {
@@ -135,7 +139,12 @@ export class AutonomousObject2d implements IAutonomousObject2d {
     }
 
     private shouldHandBrake(): boolean {
-        return this.getDestinationVector().mag() <= this.getMaxSpeed() * this.getMaxAcceleration();
+        return this.getDestinationVector().mag() <= this.getMaxSpeed() * this.getMaxAcceleration() && this.texturedObject.velocity.mag() < 1;
+    }
+
+    private handBrake(): void {
+        this.gasForce = 0;
+        this.texturedObject.velocity.mult(0);
     }
 
     private shouldPrepareGearChange(): boolean {
@@ -146,6 +155,10 @@ export class AutonomousObject2d implements IAutonomousObject2d {
         return this.getDestinationVector().mag() < this.texturedObject.velocity.mag() * this.speedToAccelerationCoefficient;
     }
 
+    private slowDown(brakeFraction: number): void {
+        this.addForce(brakeFraction * -1 / this.getMaxAcceleration());
+    }
+
     private shouldAccelerate(): boolean {
         return !this.shouldSlowDown()
             && !this.shouldPrepareGearChange()
@@ -153,24 +166,8 @@ export class AutonomousObject2d implements IAutonomousObject2d {
             && this.texturedObject.velocity.mag() < this.getMaxSpeed();
     }
 
-    private getDestinationVector(): IVector2d {
-        return this.destination.clone().sub(this.texturedObject.position);
-    }
-
-    private getDestinationAngle(): number {
-        return Math.round(this.getDestinationVector().clone().normalize().rotate(Math.PI / 2).getAngle(new Vector2d(1,0).rotate(this.texturedObject.angle).normalize()) * 10000)/10000;
-    }
-
-    private getMaxAcceleration(): number {
-        return this.getMaxSpeed() / this.speedToAccelerationCoefficient;
-    }
-
     private getMaxSpeed(): number {
         return this.isInReverse ? this.maxReverse : this.maxSpeed;
-    }
-
-    private slowDown(brakeFraction: number): void {
-        this.addForce(brakeFraction * -1 / this.getMaxAcceleration());
     }
 
     private accelerate(gasFraction: number): void {
@@ -183,13 +180,20 @@ export class AutonomousObject2d implements IAutonomousObject2d {
         this.texturedObject.applyForce(new Vector2d(0, this.gasForce));
     }
 
-    private getCurrentVelocitySign(): number {
-        return this.texturedObject.velocity.y != 0 ? Math.sign(this.texturedObject.velocity.y) : this.isInReverse ? 1 : -1;
+    private getDestinationVector(): IVector2d {
+        return this.destination.clone().sub(this.texturedObject.position);
     }
 
-    private handBrake(): void {
-        this.gasForce = 0;
-        this.texturedObject.velocity.mult(0);
+    private getDestinationAngle(): number {
+        return this.getDestinationVector().normalize().rotate(Math.PI / 2).getAngle(new Vector2d(1,0).rotate(this.texturedObject.angle).normalize());
+    }
+
+    private getMaxAcceleration(): number {
+        return this.getMaxSpeed() / this.speedToAccelerationCoefficient;
+    }
+
+    private getCurrentVelocitySign(): number {
+        return this.texturedObject.velocity.y != 0 ? Math.sign(this.texturedObject.velocity.y) : this.isInReverse ? 1 : -1;
     }
 
 
@@ -216,6 +220,6 @@ export class AutonomousObject2d implements IAutonomousObject2d {
     private drawGear(context: CanvasRenderingContext2D): void {
         context.fillStyle = 'black';
         context.font = '50px Arial';
-        context.fillText(this.isInReverse ? 'R' : 'D', this.canvasDimensions.x / 2 + 80, this.canvasDimensions.y - 40);
+        context.fillText(this.isInReverse ? 'R' : 'D', this.canvasDimensions.x / 2 + 80, this.canvasDimensions.y - 30);
     }
 }
