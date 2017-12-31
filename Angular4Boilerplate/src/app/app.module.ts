@@ -15,6 +15,7 @@ import { SimpleWaveComponent } from './components/simple-wave/simple-wave.compon
 import { PendulumComponent } from './components/pendulum/pendulum.component';
 import { ParticlesComponent } from './components/particles/particles.component';
 import { AutonomousVehicleComponent } from './components/autonomous-vehicle/autonomous-vehicle.component';
+import { TreeComponent } from './components/tree/tree.component';
 
 @NgModule({
     declarations: [
@@ -28,6 +29,7 @@ import { AutonomousVehicleComponent } from './components/autonomous-vehicle/auto
         PendulumComponent,
         ParticlesComponent,
         AutonomousVehicleComponent,
+        TreeComponent,
         NavMenuComponent
     ],
     imports: [
@@ -44,6 +46,7 @@ import { AutonomousVehicleComponent } from './components/autonomous-vehicle/auto
             { path: 'pendulum', component: PendulumComponent },
             { path: 'particles', component: ParticlesComponent },
             { path: 'autonomous-vehicle', component: AutonomousVehicleComponent },
+            { path: 'tree', component: TreeComponent },
             { path: '**', redirectTo: 'home' }
         ])
     ],

@@ -1,4 +1,4 @@
-﻿import { Component, HostListener, AfterViewInit, Output, EventEmitter } from '@angular/core';
+﻿import { Component, HostListener, AfterViewInit, Input, Output, EventEmitter } from '@angular/core';
 import { Canvas2d } from '../../models/canvas2d/canvas2d';
 import { IVector2d, Vector2d } from '../../models/vector2d/vector2d';
 
@@ -8,7 +8,7 @@ import { IVector2d, Vector2d } from '../../models/vector2d/vector2d';
 })
 export class AnimatedCanvasComponent implements AfterViewInit {
     canvas: Canvas2d;
-    isSteppedDraw: boolean = false;
+    @Input() isSteppedDraw: boolean = false;
 
     ngAfterViewInit() {
         this.canvas = new Canvas2d(document.getElementById("myCanvas") as HTMLCanvasElement);
@@ -59,7 +59,8 @@ export class AnimatedCanvasComponent implements AfterViewInit {
                 this.tickView()
             });
         }
-        var canvasDimensions = this.canvas.getCanvasDimensions();
+        var canvasDimensions = this.canvas.getCanvasDimensions(); 
+        this.canvas.getContext().setTransform(1, 0, 0, 1, 0, 0);
         this.canvas.getContext().clearRect(0, 0, canvasDimensions.x, canvasDimensions.y);
         this.tick.emit(this.canvas);
     }
